@@ -24,6 +24,7 @@ let leftKeyDown = false;
 
 let gameState = START_SCREEN;
 let resetTimerSet = false;
+let levelCompleteFade = false;
 
 function setup() {
     world = new OIMO.World({
@@ -82,8 +83,6 @@ function setup() {
 function draw() {
     requestAnimationFrame(draw);
 
-    // console.log(world.numRigidBodies);
-
     if (gameState !== START_SCREEN && gameState !== LEVEL_COMPLETE && gameState !== END_SCREEN) {
         if (rightKeyDown) {
             player.move(1.2);
@@ -93,11 +92,13 @@ function draw() {
         }
         player.update(world, obstacles);
 
-        if (player.checkForWin()) {
+        if (player.checkForWin() && !levelCompleteFade) {
             levelComplete(gameState);
+            resetTimerSet = true;
+            levelCompleteFade = true;
         } else if (player.over && !resetTimerSet) {
             setTimeout(() => {
-                if (gameState !== LEVEL_COMPLETE) {
+                if (gameState !== LEVEL_COMPLETE && gameState !== END_SCREEN) {
                     initLevel(gameState);
                 }
             }, 2000);
@@ -123,7 +124,6 @@ function draw() {
 function levelComplete(level) {
     document.getElementById("levelCompleteScreen").style.opacity = 100;
     player.over = false;
-    gameState = LEVEL_COMPLETE;
     if (level === LEVEL3) {
         gameState = END_SCREEN;
         setTimeout(() => {
@@ -134,6 +134,9 @@ function levelComplete(level) {
         }, 1000);
     } else {
         setTimeout(() => {
+            gameState = LEVEL_COMPLETE;
+            levelCompleteFade = false;
+
             document.getElementById("levelCompleteScreen").style.opacity = 0;
             setTimeout(() => {
                 initLevel(level + 1);
@@ -153,11 +156,11 @@ function initLevel(level) {
             obs.reset();
         }
         resetTimerSet = false;
+        // console.log("RESET");
     }, 500);
 }
 
 document.getElementById("start").addEventListener("click", () => {
-    // gameState = PLAY;
     document.getElementById("startScreen").style.opacity = 0;
 
     setTimeout(() => (document.getElementById("level1Screen").style.opacity = 100), 500);
