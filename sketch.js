@@ -3,6 +3,7 @@ const LEVEL1 = 1;
 const LEVEL2 = 2;
 const LEVEL3 = 3;
 const LEVEL_COMPLETE = 4;
+const END_SCREEN = 5;
 
 let world;
 
@@ -81,7 +82,9 @@ function setup() {
 function draw() {
     requestAnimationFrame(draw);
 
-    if (gameState !== START_SCREEN && gameState !== LEVEL_COMPLETE) {
+    console.log(gameState);
+
+    if (gameState !== START_SCREEN && gameState !== LEVEL_COMPLETE && gameState !== END_SCREEN) {
         if (rightKeyDown) {
             player.move(1.5);
         }
@@ -121,13 +124,23 @@ function draw() {
 
 function levelComplete(level) {
     document.getElementById("levelCompleteScreen").style.opacity = 100;
-    gameState = LEVEL_COMPLETE;
-    setTimeout(() => {
-        document.getElementById("levelCompleteScreen").style.opacity = 0;
+    if (level === LEVEL3) {
+        gameState = END_SCREEN;
         setTimeout(() => {
-            initLevel(level + 1);
-        }, 500);
-    }, 1000);
+            document.getElementById("levelCompleteScreen").style.opacity = 0;
+            setTimeout(() => {
+                document.getElementById("endScreen").style.opacity = 100;
+            }, 500);
+        }, 1000);
+    } else {
+        gameState = LEVEL_COMPLETE;
+        setTimeout(() => {
+            document.getElementById("levelCompleteScreen").style.opacity = 0;
+            setTimeout(() => {
+                initLevel(level + 1);
+            }, 500);
+        }, 1000);
+    }
 }
 
 function initLevel(level) {
