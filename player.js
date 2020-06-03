@@ -28,6 +28,11 @@ class Player {
         for (let obs of obstacles) {
             if (world.getContact(this.body, obs.body)) {
                 this.over = true;
+                obs.mesh.material.color.setHex(0xff0000);
+            } else if (this.body.getPosition().y <= -1) {
+                this.over = true;
+            } else {
+                obs.mesh.material.color.setHex(0x222222);
             }
         }
 
@@ -49,6 +54,7 @@ class Player {
     }
 
     reset() {
+        this.body.dispose();
         this.body = world.add({
             type: "box",
             size: [1, 1, 1],
@@ -74,6 +80,5 @@ class Player {
         this.mesh.quaternion.copy(rot);
 
         this.lightTarget.position.z = this.mesh.position.z;
-        // console.log(this.lightTarget);
     }
 }

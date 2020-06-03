@@ -10,11 +10,28 @@ class Obstacle {
             friction: 0.2,
             restitution: 0,
         });
-        // this.body.isSensor = true;
 
         this.mesh = new THREE.Mesh(new THREE.BoxGeometry(), new THREE.MeshPhongMaterial({ color: 0x222222 }));
         this.mesh.castShadow = true;
         scene.add(this.mesh);
+
+        this.initPos = pos;
+    }
+
+    reset() {
+        this.body.position.x = this.initPos.x;
+        this.body.position.y = this.initPos.y;
+        this.body.position.z = this.initPos.z;
+
+        this.body.resetRotation(0, 0, 0);
+
+        this.body.angularVelocity.x = 0;
+        this.body.angularVelocity.y = 0;
+        this.body.angularVelocity.z = 0;
+
+        this.body.linearVelocity.x = 0;
+        this.body.linearVelocity.y = 0;
+        this.body.linearVelocity.z = 0;
     }
 
     render() {

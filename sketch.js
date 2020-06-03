@@ -23,6 +23,7 @@ let rightKeyDown = false;
 let leftKeyDown = false;
 
 let gameState = START_SCREEN;
+let resetTimerSet = false;
 
 function setup() {
     world = new OIMO.World({
@@ -81,22 +82,26 @@ function setup() {
 function draw() {
     requestAnimationFrame(draw);
 
-    console.log(gameState);
+    // console.log(world.numRigidBodies);
 
     if (gameState !== START_SCREEN && gameState !== LEVEL_COMPLETE && gameState !== END_SCREEN) {
         if (rightKeyDown) {
-            player.move(1.5);
+            player.move(1.2);
         }
         if (leftKeyDown) {
-            player.move(-1.5);
+            player.move(-1.2);
         }
-
         player.update(world, obstacles);
 
         if (player.checkForWin()) {
             levelComplete(gameState);
-            console.log("WIN");
-            console.log(player.body.getPosition());
+        } else if (player.over && !resetTimerSet) {
+            setTimeout(() => {
+                if (gameState !== LEVEL_COMPLETE) {
+                    initLevel(gameState);
+                }
+            }, 2000);
+            resetTimerSet = true;
         }
 
         world.step();
@@ -117,6 +122,8 @@ function draw() {
 
 function levelComplete(level) {
     document.getElementById("levelCompleteScreen").style.opacity = 100;
+    player.over = false;
+    gameState = LEVEL_COMPLETE;
     if (level === LEVEL3) {
         gameState = END_SCREEN;
         setTimeout(() => {
@@ -126,7 +133,6 @@ function levelComplete(level) {
             }, 500);
         }, 1000);
     } else {
-        gameState = LEVEL_COMPLETE;
         setTimeout(() => {
             document.getElementById("levelCompleteScreen").style.opacity = 0;
             setTimeout(() => {
@@ -138,12 +144,16 @@ function levelComplete(level) {
 
 function initLevel(level) {
     document.getElementById(`level${level}Screen`).style.opacity = 100;
+
     setTimeout(() => {
         document.getElementById(`level${level}Screen`).style.opacity = 0;
         gameState = level;
+        player.reset();
+        for (let obs of obstacles) {
+            obs.reset();
+        }
+        resetTimerSet = false;
     }, 500);
-    player.reset();
-    console.log(player.body.getPosition());
 }
 
 document.getElementById("start").addEventListener("click", () => {
