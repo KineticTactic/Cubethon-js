@@ -50,21 +50,18 @@ function setup() {
     scene.add(ambientLight);
 
     directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-    directionalLight.position.set(-2, 4, 2);
+    directionalLight.position.set(-2, 6, 2);
     directionalLight.castShadow = true;
-    // console.log(directionalLight);
     // const d = 40;
     // directionalLight.shadow.camera.top = d;
     // directionalLight.shadow.camera.bottom = -d;
     // directionalLight.shadow.camera.left = -d;
     // directionalLight.shadow.camera.right = d;
-    // scene.add(new THREE.CameraHelper(directionalLight.shadow.camera));
+    scene.add(new THREE.CameraHelper(directionalLight.shadow.camera));
     scene.add(directionalLight);
 
     camera.position.y = 2;
     camera.position.z = 5;
-
-    // scene.add(new THREE.CameraHelper(camera));
 
     player = new Player(world, scene, new THREE.Vector3(0, 5, 50));
     ground = new StaticBox(world, scene, new THREE.Vector3(0, 0, -50), new THREE.Vector3(8, 1, 200));
@@ -77,6 +74,8 @@ function setup() {
 
     obstacles.push(new Obstacle(world, scene, new THREE.Vector3(1, 1, -25)));
     obstacles.push(new Obstacle(world, scene, new THREE.Vector3(3, 1, -25)));
+
+    directionalLight.target = player.lightTarget;
 }
 
 function draw() {
@@ -108,14 +107,8 @@ function draw() {
         }
         player.render(camera);
 
-        // directionalLight.shadow.camera.position.set(camera.position.x, camera.position.y, camera.position.z);
-        // console.log(directionalLight.shadow.camera.position);
-        // directionalLight.position.z = player.body.getPosition().z - 4;
-        // directionalLight.target.z = player.body.getPosition().z;
-        // directionalLight.target.position.x = player.body.getPosition().x;
-        // directionalLight.target.position.y = player.body.getPosition().y;
-        // directionalLight.target.position.z = player.body.getPosition().z;
-        // console.log(directionalLight.target.position);
+        directionalLight.position.z = player.body.getPosition().z - 4;
+
         renderer.render(scene, camera);
     } else {
         renderer.render(emptyScene, camera);

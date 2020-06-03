@@ -17,6 +17,9 @@ class Player {
         this.mesh.castShadow = true;
         scene.add(this.mesh);
 
+        this.lightTarget = new THREE.Object3D();
+        scene.add(this.lightTarget);
+
         this.initPos = pos;
         this.over = false;
     }
@@ -69,5 +72,8 @@ class Player {
 
         this.mesh.position.copy(pos);
         this.mesh.quaternion.copy(rot);
+
+        this.lightTarget.position.z = this.mesh.position.z;
+        // console.log(this.lightTarget);
     }
 }
