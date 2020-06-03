@@ -57,7 +57,7 @@ function setup() {
     // directionalLight.shadow.camera.bottom = -d;
     // directionalLight.shadow.camera.left = -d;
     // directionalLight.shadow.camera.right = d;
-    scene.add(new THREE.CameraHelper(directionalLight.shadow.camera));
+    // scene.add(new THREE.CameraHelper(directionalLight.shadow.camera));
     scene.add(directionalLight);
 
     camera.position.y = 2;
